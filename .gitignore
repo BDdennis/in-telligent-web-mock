@@ -1,6 +1,10 @@
 # Editors
 .idea
 
+logs/apache2/*
+logs/mysql/*
+logs/xdebug/*
+
 # OS metadata
 .DS_Store
 Thumbs.db

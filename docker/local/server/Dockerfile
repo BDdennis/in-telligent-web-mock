@@ -1,4 +1,7 @@
-FROM php:5.6-40-apache-stretch
+FROM php:5.6.40-apache-stretch
+
+# Permissions
+RUN groupadd www -g12345 && usermod -aG 12345 root && usermod -aG 12345 www-data
 
 # Backup and clean source.list file
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.old && \
@@ -13,7 +16,7 @@ RUN printf "deb http://archive.debian.org/debian/ stretch main\n" > /etc/apt/sou
 RUN apt-get -y update && apt-get upgrade -y
 
 # Install tools && libraries
-RUN apt-get -y install --fix-missing nano wget dialog \
+RUN apt-get -y install --fix-missing vim wget dialog \
     build-essential git curl libcurl3 libcurl3-dev zip \
     libmcrypt-dev libsqlite3-dev libsqlite3-0 mysql-client \
     zlib1g-dev libicu-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
@@ -44,10 +47,30 @@ RUN mkdir -p /etc/apache2/ssl
 # Enable SSL support
 RUN a2enmod ssl && a2enmod rewrite
 
+RUN a2enmod deflate && a2enmod expires
+
 # Enable apache modules
 RUN a2enmod rewrite headers
 
+RUN a2dissite 000-default
+COPY ./apache2.conf  /etc/apache2/apache2.conf
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+COPY ./config/vhosts/vhost.conf /etc/apache2/sites-available/
+RUN a2ensite vhost
+ENV APACHE_DOCUMENT_ROOT /var/www/html/
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www
+RUN chown www-data:www -R /var/www/html/
+
+# PHP
+COPY ./config/php/php.ini /usr/local/etc/php/php.ini
+
+# Log
+RUN chmod 777 -R /var/log/apache2 && chown www-data:www-data -R /var/log/apache2 && chmod 777 -Rf /var/www/html/ && chgrp www -R /var/www/html/
+
+USER root:www
+
 EXPOSE 80
-EXPOSE 443
+# EXPOSE 443
 
 ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
