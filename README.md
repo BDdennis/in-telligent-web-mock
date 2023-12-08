@@ -2,14 +2,17 @@
 
 - Clone this repository on your local computer
 - configure .env as needed
-- Run the `docker compose build && docker-compose up -d`.
+- Run the `docker compose up --build -d`.
+
+> [!NOTE] <br>
+> --detach -d Detached mode: Run containers in the background
 
 ```shell
 git clone https://github.com/BDdennis/in-telligent-web-mock.git
-cd docker-compose-lamp/
-cp sample.env .env
+cd in-telligent-web-mock/
+cp .env.example .env
 // modify sample.env as needed
-docker compose build && docker-compose up -d
+docker compose up --build -d
 // visit localhost
 // P.S run docker build only if you update your orchestrator contract yml
 ```
