@@ -1,0 +1,12 @@
+# Editors
+.idea
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Secret variables
+*.env
+
+# Dependency directory
+node_modules
