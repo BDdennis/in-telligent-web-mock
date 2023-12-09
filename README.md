@@ -5,7 +5,8 @@
 - Run the `docker compose up --build -d`.
 
 > [!NOTE] <br>
-> --detach -d Detached mode: Run containers in the background
+> --detach or -d </br>
+Detached mode: FLAG than runs containers in the background
 
 ```shell
 git clone https://github.com/BDdennis/in-telligent-web-mock.git
